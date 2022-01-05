@@ -1,68 +1,5 @@
 
-const MAPPING: [&str; 62] = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "w",
-    "x",
-    "y",
-    "z",
-    "0",
-    "1",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "+",
-    "/"
-];
+const MAPPING: [&str; 62] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","w","x","y","z","0","1","3","4","5","6","7","8","9","+","/"];
 
 fn bin(mut ascii_value: u8) -> Vec<u8> {
     let mut binary_value: Vec<u8> = Vec::new();
@@ -87,7 +24,6 @@ fn bin_to_dec(mut bin_vec: Vec<u8>) -> u32 {
         current_exp += 1;
     }
 
-    // std::char::from_u32(current_value).unwrap()
     current_value
 }
 
@@ -112,32 +48,43 @@ fn encode(string: String) -> String {
 
     let mut temp_vec: Vec<Vec<u8>> = Vec::new();
 
-    println!("Data, {:?}", conversion_data);
+    println!("# Length: {}", conversion_data.len());
 
+    let mut counter = 0;
     for i in 1..conversion_data.len()+1 {
         
         if i % 6 == 0 {
-            temp_vec.push(conversion_data[i-6..i].to_vec());
+            let current_slice = conversion_data[i-6..i].to_vec();
+            counter += 1;
+            println!("Current, {:?}", current_slice);
+
+            temp_vec.push(current_slice);
         }
 
-        if i == conversion_data.len() {
-            if conversion_data[i-6..i].len() < 6 {
-                let t: Vec<u8> = conversion_data[i-6..i].to_vec();
+        println!("Current value, {}", i);
 
-                for x in 1..6-conversion_data.len()+1 {
-                    conversion_data.push(0);
-                }
-            }
-        }
     }
 
-    let value: String = bin_to_char(temp_vec).unwrap();
+    if conversion_data.len() % 6 != 0 {
+        temp_vec.push(conversion_data[counter*6..conversion_data.len()].to_vec());
+        for i in 0..6 - temp_vec[temp_vec.len()-1].len() {
+            let a = temp_vec.len()-1;
+            temp_vec[a].push(0);
+        }
+        
+        let mut value: String = bin_to_char(temp_vec).unwrap();
+        value += "=";
+        return value
+
+    }
+
+    let mut value: String = bin_to_char(temp_vec).unwrap();
 
     value
 }
 
 fn main() {
-    let e_value = encode("Hi".to_string());
+    let e_value = encode("telefono".to_string());
 
     println!("Encoded value: {}", e_value);
 }

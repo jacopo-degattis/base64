@@ -46,11 +46,6 @@ fn binarr_to_string(bin_string: Vec<Vec<u8>>, padded: bool) -> String {
     value
 }
 
-fn char_to_bin(character: char) -> Vec<u8> {
-    let arr: Vec<u8> = bin(character as u8);
-    arr
-}
-
 fn add_padding_if_necessary(
     encoded_binary_string: &mut Vec<Vec<u8>>,
     binary_values: &Vec<u8>,
@@ -138,19 +133,19 @@ fn binarr_to_decoded_string(eigth_bit_arr: Vec<Vec<u8>>) -> String {
 }
 
 fn decode(string: &str) -> String {
-    let mut sixbit_union: Vec<u8> = Vec::new();
+    let mut _sixbit_union: Vec<u8> = Vec::new();
     let mut eigth_bit_arr: Vec<Vec<u8>> = Vec::new();
     let mut encoded_string: String = String::from(string);
 
     // Remove padding from string
     encoded_string = encoded_string.replace("=", "");
 
-    sixbit_union = get_vec_from_slices(encoded_string);
+    _sixbit_union = get_vec_from_slices(encoded_string);
 
-    for i in 1..sixbit_union.len()+1 {
+    for i in 1.._sixbit_union.len()+1 {
         
         if i % 8 == 0 {
-            let current_slice = sixbit_union[i-8..i].to_vec();
+            let current_slice = _sixbit_union[i-8..i].to_vec();
             eigth_bit_arr.push(current_slice);
         }
     }

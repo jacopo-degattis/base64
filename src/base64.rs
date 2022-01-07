@@ -18,12 +18,12 @@ fn bin(mut ascii_value: u8) -> Vec<u8> {
     binary_value
 }
 
-fn bin_to_dec(mut bin_vec: Vec<u8>) -> u32 {
+fn bin_to_dec(mut bin_vec: Vec<u8>) -> u8 {
     let mut current_exp = 0;
-    let mut current_value: u32 = 0;
+    let mut current_value: u8 = 0;
     bin_vec.reverse();
     for i in bin_vec {
-        current_value += i as u32 * u32::pow(2, current_exp);
+        current_value += i as u8 * u8::pow(2, current_exp);
         current_exp += 1;
     }
 
@@ -102,17 +102,41 @@ fn get_int_by_mapping(character: char) -> i8 {
 }
 
 fn decode(string: &str) -> String {
+    let mut full_vec: Vec<u8> = Vec::new();
+    let mut temp_vec: Vec<Vec<u8>> = Vec::new();
     let mut encoded_string: String = String::from(string);
 
     // Remove padding characters from string
     encoded_string = encoded_string.replace("=", "");
 
     for chr in encoded_string.chars() {
-        let v = get_int_by_mapping(chr);
-        println!("V, {}", v);
+        let ascii_value = get_int_by_mapping(chr);
+        let binary_value = bin(ascii_value as u8);
+        let six_bit_slice = binary_value[2..binary_value.len()].to_vec();
+        full_vec.extend(six_bit_slice);
     }
 
-    encoded_string
+    // println!("Full vec, {:?}", full_vec);
+
+    for i in 1..full_vec.len()+1 {
+        
+        if i % 8 == 0 {
+            let current_slice = full_vec[i-8..i].to_vec();
+            // counter += 1;
+            temp_vec.push(current_slice);
+        }
+    }
+
+    let mut result = String::from("");
+    for word in temp_vec {
+        let value = bin_to_dec(word);
+        let current_char = value as char;
+        result.push_str(String::from(current_char).as_str());
+    }
+
+    // println!("Got, {:?}", temp_vec);
+
+    result
 }
 
 fn main() {

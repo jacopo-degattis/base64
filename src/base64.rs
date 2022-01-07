@@ -1,3 +1,5 @@
+use std::env;
+use std::process::{exit};
 
 const MAPPING: [&str; 64] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
 
@@ -24,8 +26,6 @@ fn bin_to_dec(mut bin_vec: Vec<u8>) -> u32 {
         current_exp += 1;
     }
 
-    println!("Bin -> dec, {}", current_value);
-
     current_value
 }
 
@@ -35,28 +35,22 @@ fn bin_to_char(bin_string: Vec<Vec<u8>>) -> Result<String, std::io::Error> {
     for word in bin_string {
         let a = bin_to_dec(word);
 
-        println!("t, {}", MAPPING[a as usize]);
-
         value.push_str(MAPPING[a as usize]);
     }
 
     Ok(value)
 }
 
-fn encode(string: String) -> String {
+fn encode(string: &String) -> String {
     let mut conversion_data: Vec<u8> = Vec::new();
 
     for i in string.chars() {
         let binary_value = bin(i as u8);
 
-        println!("{} in binary: {:?}", i, binary_value);
-
         conversion_data.extend(binary_value);
     }
 
     let mut temp_vec: Vec<Vec<u8>> = Vec::new();
-
-    println!("# Length: {}", conversion_data.len());
 
     let mut counter = 0;
     for i in 1..conversion_data.len()+1 {
@@ -64,18 +58,14 @@ fn encode(string: String) -> String {
         if i % 6 == 0 {
             let current_slice = conversion_data[i-6..i].to_vec();
             counter += 1;
-            println!("Current, {:?}", current_slice);
-
             temp_vec.push(current_slice);
         }
-
-        // println!("Current value, {}", i);
 
     }
 
     if conversion_data.len() % 6 != 0 {
         temp_vec.push(conversion_data[counter*6..conversion_data.len()].to_vec());
-        for i in 0..6 - temp_vec[temp_vec.len()-1].len() {
+        for _i in 0..6 - temp_vec[temp_vec.len()-1].len() {
             let a = temp_vec.len()-1;
             temp_vec[a].push(0);
         }
@@ -86,13 +76,32 @@ fn encode(string: String) -> String {
 
     }
 
-    let mut value: String = bin_to_char(temp_vec).unwrap();
+    let value: String = bin_to_char(temp_vec).unwrap();
 
     value
 }
 
 fn main() {
-    let e_value = encode("testo di prova encoded in base64".to_string());
 
-    println!("Encoded value: {}", e_value);
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() != 3 {
+        println!("USAGE: ./b64 [OPTIONS] [ARGS]");
+        println!("  [OPTIONS]");
+        println!("      -e encode payload");
+        println!("      -d decode payload");
+        println!("  [ARGS]");
+        println!("      <value> value to encode/decode in base64");
+        exit(1);
+    }
+
+    for arg in 1..args.len() {
+        match args[arg].as_str() {
+            "-e" => println!("{}", encode(&args[arg+1])),
+            // TODO: add encode function 
+            _ => ()
+        }
+    }
+
+    exit(0);
 }

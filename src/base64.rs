@@ -2,7 +2,7 @@ use std::env;
 use std::process::{exit};
 
 // TODO: move to char instead of &str
-const MAPPING: [&str; 64] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
+const MAPPING: [char; 64] = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'];
 
 fn bin(mut ascii_value: u8) -> Vec<u8> {
     let mut binary_value: Vec<u8> = Vec::new();
@@ -36,7 +36,7 @@ fn bin_to_char(bin_string: Vec<Vec<u8>>) -> Result<String, std::io::Error> {
     for word in bin_string {
         let a = bin_to_dec(word);
 
-        value.push_str(MAPPING[a as usize]);
+        value.push(MAPPING[a as usize]);
     }
 
     Ok(value)
@@ -91,14 +91,13 @@ fn encode(string: &String) -> String {
 fn get_int_by_mapping(character: char) -> i8 {
     let mut index: i8 = 0;
     for value in MAPPING {
-        if value.chars().nth(0).unwrap() == character {
+        if value == character {
             return index;
         }
         index += 1;
     }
 
     return -1 as i8;
-    // return 1 as u8;
 }
 
 fn decode(string: &str) -> String {
@@ -106,7 +105,6 @@ fn decode(string: &str) -> String {
     let mut temp_vec: Vec<Vec<u8>> = Vec::new();
     let mut encoded_string: String = String::from(string);
 
-    // Remove padding characters from string
     encoded_string = encoded_string.replace("=", "");
 
     for chr in encoded_string.chars() {
@@ -115,8 +113,6 @@ fn decode(string: &str) -> String {
         let six_bit_slice = binary_value[2..binary_value.len()].to_vec();
         full_vec.extend(six_bit_slice);
     }
-
-    // println!("Full vec, {:?}", full_vec);
 
     for i in 1..full_vec.len()+1 {
         
@@ -133,8 +129,6 @@ fn decode(string: &str) -> String {
         let current_char = value as char;
         result.push_str(String::from(current_char).as_str());
     }
-
-    // println!("Got, {:?}", temp_vec);
 
     result
 }
@@ -156,7 +150,6 @@ fn main() {
     for arg in 1..args.len() {
         match args[arg].as_str() {
             "-e" => println!("{}", encode(&args[arg+1])),
-            // TODO: add encode function 
             "-d" => println!("{}", decode(&args[arg+1])),
             _ => ()
         }

@@ -1,5 +1,5 @@
 
-const MAPPING: [&str; 62] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","w","x","y","z","0","1","3","4","5","6","7","8","9","+","/"];
+const MAPPING: [&str; 64] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
 
 fn bin(mut ascii_value: u8) -> Vec<u8> {
     let mut binary_value: Vec<u8> = Vec::new();
@@ -24,6 +24,8 @@ fn bin_to_dec(mut bin_vec: Vec<u8>) -> u32 {
         current_exp += 1;
     }
 
+    println!("Bin -> dec, {}", current_value);
+
     current_value
 }
 
@@ -32,6 +34,9 @@ fn bin_to_char(bin_string: Vec<Vec<u8>>) -> Result<String, std::io::Error> {
     
     for word in bin_string {
         let a = bin_to_dec(word);
+
+        println!("t, {}", MAPPING[a as usize]);
+
         value.push_str(MAPPING[a as usize]);
     }
 
@@ -43,6 +48,9 @@ fn encode(string: String) -> String {
 
     for i in string.chars() {
         let binary_value = bin(i as u8);
+
+        println!("{} in binary: {:?}", i, binary_value);
+
         conversion_data.extend(binary_value);
     }
 
@@ -61,7 +69,7 @@ fn encode(string: String) -> String {
             temp_vec.push(current_slice);
         }
 
-        println!("Current value, {}", i);
+        // println!("Current value, {}", i);
 
     }
 
@@ -84,7 +92,7 @@ fn encode(string: String) -> String {
 }
 
 fn main() {
-    let e_value = encode("telefono".to_string());
+    let e_value = encode("testo di prova encoded in base64".to_string());
 
     println!("Encoded value: {}", e_value);
 }

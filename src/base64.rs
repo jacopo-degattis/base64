@@ -1,6 +1,7 @@
 use std::env;
 use std::process::{exit};
 
+// TODO: move to char instead of &str
 const MAPPING: [&str; 64] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
 
 fn bin(mut ascii_value: u8) -> Vec<u8> {
@@ -39,6 +40,12 @@ fn bin_to_char(bin_string: Vec<Vec<u8>>) -> Result<String, std::io::Error> {
     }
 
     Ok(value)
+}
+
+fn char_to_bin(character: char) -> Vec<u8> {
+    let arr: Vec<u8> = bin(character as u8);
+
+    arr
 }
 
 fn encode(string: &String) -> String {
@@ -81,6 +88,33 @@ fn encode(string: &String) -> String {
     value
 }
 
+fn get_int_by_mapping(character: char) -> i8 {
+    let mut index: i8 = 0;
+    for value in MAPPING {
+        if value.chars().nth(0).unwrap() == character {
+            return index;
+        }
+        index += 1;
+    }
+
+    return -1 as i8;
+    // return 1 as u8;
+}
+
+fn decode(string: &str) -> String {
+    let mut encoded_string: String = String::from(string);
+
+    // Remove padding characters from string
+    encoded_string = encoded_string.replace("=", "");
+
+    for chr in encoded_string.chars() {
+        let v = get_int_by_mapping(chr);
+        println!("V, {}", v);
+    }
+
+    encoded_string
+}
+
 fn main() {
 
     let args: Vec<String> = env::args().collect();
@@ -99,6 +133,7 @@ fn main() {
         match args[arg].as_str() {
             "-e" => println!("{}", encode(&args[arg+1])),
             // TODO: add encode function 
+            "-d" => println!("{}", decode(&args[arg+1])),
             _ => ()
         }
     }

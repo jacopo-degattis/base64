@@ -146,8 +146,8 @@ fn main() {
     if args.len() != 3 {
         println!("USAGE: ./b64 [OPTIONS] [ARGS]");
         println!("  [OPTIONS]");
-        println!("      -e encode payload");
-        println!("      -d decode payload");
+        println!("      -e encode <value>");
+        println!("      -d decode <value>");
         println!("  [ARGS]");
         println!("      <value> value to encode/decode in base64");
         exit(1);

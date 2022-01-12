@@ -30,7 +30,7 @@ fn bin_to_dec(mut bin_vec: Vec<u8>) -> u8 {
     current_value
 }
 
-fn binarr_to_string(bin_string: Vec<Vec<u8>>, padded: bool) -> String {
+fn binarr_to_string(bin_string: Vec<Vec<u8>>, padded: u8) -> String {
     let mut value: String = String::from("");
     
     for word in bin_string {
@@ -39,7 +39,7 @@ fn binarr_to_string(bin_string: Vec<Vec<u8>>, padded: bool) -> String {
         value.push(MAPPING[a as usize]);
     }
 
-    if padded {
+    for p in 0..padded / 2 {
         value += "=";
     }
 
@@ -50,22 +50,24 @@ fn add_padding_if_necessary(
     encoded_binary_string: &mut Vec<Vec<u8>>,
     binary_values: &Vec<u8>,
     counter: usize
-) -> bool {
+) -> u8 {
     if binary_values.len() % 6 != 0 {
         
         let six_bit_slice = &binary_values[counter*6..binary_values.len()];
 
         encoded_binary_string.push(six_bit_slice.to_vec());
 
+        let mut counter: u8 = 0;
         for _i in 0..6 - encoded_binary_string[encoded_binary_string.len()-1].len() {
             let a = encoded_binary_string.len()-1;
             encoded_binary_string[a].push(0);
+            counter += 1;
         }
 
-        return true;
+        return counter
     }
 
-    return false;
+    return 0
 }
 
 fn encode(string: &String) -> String {

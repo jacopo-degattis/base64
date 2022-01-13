@@ -39,7 +39,7 @@ fn binarr_to_string(bin_string: Vec<Vec<u8>>, padded: u8) -> String {
         value.push(MAPPING[a as usize]);
     }
 
-    for p in 0..padded / 2 {
+    for _p in 0..padded / 2 {
         value += "=";
     }
 
